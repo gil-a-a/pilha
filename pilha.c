@@ -1,9 +1,10 @@
-
-/*tem q consertar o pop e outras coisas talvez*/
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+
+/*/////////////////////
+To-do: fazer um menu daora e bonito
+*//////////////////////
 
 //botei essa var global aq só pra ficar fácil de testar
 int a = 1;
@@ -29,18 +30,18 @@ Node* cria_no()
 	return p;
 }
 
-//Funcoes gerais:
+/////////Funcoes gerais:
 Node* EsvPilha(Node* P);
 bool PilVaz(Node* P);
 void Push(int x, Node* P);
-//int Posic(int x, Node* L);
 int Topo(Node* P);
-void Pop(Node* P);
+Node* Pop(Node* P);
 void Printa_Pilha(Node* node);
+//////////////////////////////
 
 int main ()
 {
-	int x, p;
+	int x;
 	char resp;
 	Node *raiz, *no_aux;
 	
@@ -48,6 +49,7 @@ int main ()
 	
 	no_aux = raiz;
 	
+	//preenche pilha
 	while (1){
 		printf("Quer inserir mais um elemento na pilha?\n");
 			scanf(" %c", &resp);
@@ -59,31 +61,33 @@ int main ()
 		printf("\ninfo: %d\n", no_aux->n);
 	}
 	
-	printf("Insira o numero X para inseri-lo na pilha: ");
-		scanf("%d", &x);
-	Push(x, raiz);
+	//push()
+	printf("\nQuer inserir um numero na pilha? ");
+		scanf(" %c", &resp);	
+	if (resp != 'n' && resp != 'N'){
+		printf("Insira o numero X para inseri-lo na pilha: ");
+			scanf("%d", &x);
+		Push(x, raiz);
+	}
 	
 	Printa_Pilha(raiz);
 	PilVaz(raiz);
 	
-	//fazer funcao pra procurar um elemento na pilha
-	/*
-	printf("\nInsira o numero para procura-lo na pilha: ");
-		scanf("%d", &x);
-	printf("\nElemento %d encontrado em %d", x, Posic(x, raiz));
-	*/
-	
+	//Topo()
 	printf("\nQuer ver o elemento do topo? ");
 		scanf(" %c", &resp);
 	if (resp != 'n' && resp != 'N')
-		printf("Elemento: %d", Topo(raiz));
+		if (!PilVaz(raiz))
+			printf("\nElemento: %d", Topo(raiz));
 	
+	//pop()
 	printf("\nQuer retirar um elemento da pilha? ");
 		scanf(" %c", &resp);
 	if (resp != 'n' && resp != 'N')
-		Pop(raiz);
+		raiz = Pop(raiz);
 	Printa_Pilha(raiz);
 	
+	//EsvPil()
 	printf("\nEsvaziando pilha...");
 	raiz = EsvPilha(raiz);
 	printf("\n");
@@ -95,7 +99,7 @@ int main ()
 
 Node* EsvPilha(Node* P)
 {
-	if(P->next != NULL)
+	if(P != NULL)
 		EsvPilha(P->next);
 	
 	free(P);
@@ -130,24 +134,6 @@ void Push(int x, Node* P)
 	aux->next = aux_2;
 }
 
-/*
-int Posic(int x, Node* L)
-{
-	int i = 1;
-	Node *aux;
-	
-	aux = L;
-	
-	while (aux->n != x){
-		i++;
-		aux = aux->next;
-	}
-	
-	printf("\n%d na pos: %d", x, i);
-	return i;
-}
-*/
-
 int Topo(Node* P)
 {
 	Node* aux;
@@ -159,17 +145,16 @@ int Topo(Node* P)
 	return aux->n;
 }
 
-void Pop(Node* P)
+Node* Pop(Node* P)
 {
-	Node *aux;
+	if (P->next == NULL){
+		P = NULL;
+		free(P);
+	}
+	else
+		P->next = Pop(P->next);	//recursão, pq sim
 	
-	aux = P;
-	
-	while(aux->next != NULL)
-		aux = aux->next; //anda até a o fim da pilha
-
-	aux = NULL;
-	free(aux);
+	return P;
 }
 
 void Printa_Pilha(Node* node)
